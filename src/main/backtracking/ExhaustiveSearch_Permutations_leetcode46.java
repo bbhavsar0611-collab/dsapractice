@@ -8,14 +8,17 @@ public class ExhaustiveSearch_Permutations_leetcode46 {
         public List<List<Integer>> permute(int[] nums) {
 
             List<List<Integer>> result = new ArrayList<>();
-            List<Integer> remaining = new ArrayList<>();
+            List<Integer> numbers = new ArrayList<>();
 
+
+            //convert the integer array to list
             for (int num : nums) {
-                remaining.add(num);
+                numbers.add(num);
             }
 
-            backtrack(
-                    remaining,
+            //initial call
+            helper(
+                    numbers,
                     new ArrayList<>(),
                     result
             );
@@ -23,48 +26,44 @@ public class ExhaustiveSearch_Permutations_leetcode46 {
             return result;
         }
 
-        private void backtrack(
+        private void helper(
                 List<Integer> remaining,
-                List<Integer> partial,
+                List<Integer> slate,
                 List<List<Integer>> result
         ) {
 
             // Base case
-            if (remaining.isEmpty()) {
-                result.add(new ArrayList<>(partial));
+            if (remaining.size()==0) {
+                result.add(slate);
                 return;
             }
 
+
+            //try all choices in the current remaining list
             for (int i = 0; i < remaining.size(); i++) {
 
                 // ==============================
                 // 1. DECREASE SUBPROBLEM
                 // ==============================
 
-                int choice = remaining.remove(i);
+               List<Integer> newRemaining = new ArrayList<>(remaining);
+               newRemaining.remove(i);
 
 
                 // ==============================
                 // 2. INCREASE PARTIAL SOLUTION
                 // ==============================
 
-                partial.add(choice);
+                List<Integer> new_slate = new ArrayList<>(slate);
+                new_slate.add(remaining.get(i));
 
 
                 // ==============================
                 // 3. RECURSE
                 // ==============================
 
-                backtrack(remaining, partial, result);
+                helper(newRemaining, new_slate, result);
 
-
-                // ==============================
-                // 4. UNDO / BACKTRACK
-                // ==============================
-
-                partial.remove(partial.size() - 1);
-
-                remaining.add(i, choice);
             }
         }
 
